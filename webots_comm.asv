@@ -1,0 +1,107 @@
+function webots_comm(block)
+% Level-2 MATLAB S-function for receiving JSON via UDP from Webots
+  setup(block);
+end
+
+
+function setup(block)
+  % Register ports
+  block.NumInputPorts  = 0;
+  block.NumOutputPorts = 1;
+
+  % Output: [x; y; theta]
+  block.OutputPort(1).Dimensions = [3 1];
+  block.OutputPort(1).DatatypeID = 0;  % double
+  block.OutputPort(1).Complexity = 'Real';
+  block.OutputPort(1).SamplingMode = 'Sample';
+
+  % Sample time
+  block.SampleTimes = [0.05 0];
+
+  % Register methods
+  block.RegBlockMethod('Start', @Start);
+  block.RegBlockMethod('Outputs', @Outputs);
+  block.RegBlockMethod('Terminate', @Terminate);
+end
+
+
+function Start(block)
+    persistent listen_pipe write_pipe host write_port
+
+    host = "127.0.0.1";
+    write_port = 25002;   % to Webots
+    listen_port = 25001;  % from Webots
+
+    try
+        % Listen on 25001 for messages from Webots
+        listen_pipe = udpport("datagram", "LocalPort", listen_port, "Timeout", 0.1);
+
+        % This socket will send from an *ephemeral* port to 127.0.0.1:25002
+        write_pipe = udpport("datagram", "IPV4", "Timeout", 0.1);
+    catch err
+        error("Failed to open UDP ports: %s", err.message);
+    end
+
+    % Store references
+    assignin('base', 'webots_listen_pipe', listen_pipe);
+    assignin('base', 'webots_write_pipe', write_pipe);
+    assignin('base', 'webots_host', host);
+    assignin('base', 'webots_write_port', write_port);
+
+    % Send READY
+    msg = uint8('READY');
+    write(write_pipe, msg, host, write_port);
+    fprintf("READY sent to Webots (%s:%d)\n", host, write_port);
+
+end
+
+
+function Outputs(block)
+    evalin('base', 'webots_listen_pipe'
+    % Retrieve persistent objects from base workspace
+    data = zeros(3,1);
+    path_received = false;
+    while ~path_received
+        try
+            if listen_pipe.NumDatagramsAvailable > 0
+                % Read *only one datagram* (not all at once)
+                raw = read(listen_pipe, 1, "string");
+                
+                % Validate content before decoding
+                if isstring(raw) || ischar(raw)
+                    try
+                        jsonData = jsondecode(raw);
+                    catch
+                        warning("Received data is not valid JSON: %s", raw);
+                        continue; % skip and keep waiting
+                    end
+    
+                    if isfield(jsonData, "id") && strcmp(jsonData.id, "path")
+                        x_data = double(jsonData.x(:));
+                        y_data = double(jsonData.y(:));
+                        heading_data = double(jsonData.heading(:));
+                        data = [x_data'; y_data'; heading_data'];
+                        path_received = true;
+                        disp("Path data received!");
+                    end
+                else
+                    warning("Received non-text data, skipping...");
+                end
+            end
+        catch err
+            warning(err.identifier, "UDP receive error: %s", err.message);
+        end
+    end
+    block.OutputPort(1).Data = data;
+end
+
+
+function Terminate(block)
+    try
+        clear userData.listen_pipe;
+        evalin('base', 'clear webots_listen_pipe webots_write_pipe webots_host webots_write_port');
+        fprintf("UDP connections closed.\n");
+    catch
+        % ignore cleanup errors
+    end
+end

@@ -1,0 +1,38 @@
+CC     = "E:\Mathlab\sys\lcc64\lcc64\bin\lcc64.exe"
+LD     = "E:\Mathlab\sys\lcc64\lcc64\bin\lcclnk64.exe"
+LIBCMD = "E:\Mathlab\sys\lcc64\lcc64\bin\lcclib64.exe"
+CFLAGS = -dll -noregistrylookup  -c -Zp8 -DLCC_WIN64 -DMATLAB_MEX_FILE -nodeclspec 
+LDFLAGS = -s -dll -L"E:\Mathlab\sys\lcc64\lcc64\lib64" -entry LibMain -map sfun.map 
+LIBFLAGS = 
+
+OBJECTS = \
+	"ddmr_for_mstc2003_sfun.obj"\
+	"c2_ddmr_for_mstc2003.obj"\
+	"ddmr_for_mstc2003_sfun_registry.obj"\
+	"DAHostLib_Network.obj"\
+	"DAHostLib_rtw.obj"\
+	"half_type.obj"\
+	"lccstub.obj"\
+	"c_mexapi_version.obj"\
+
+INCLUDE_PATH= -I"E:\Mathlab\extern\include"  -I"E:\Mathlab\simulink\include"  -I"E:\Mathlab\simulink\include\sf_runtime"  -I"E:\Mathlab\stateflow\c\mex\include"  -I"E:\Mathlab\rtw\c\src"  -I"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src"  -I"E:\Personal\collage\semester-5\praktikum robotika\ddmr_webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src"  -I"E:\Personal\collage\semester-5\praktikum robotika\ddmr_webot"  -I"E:\Mathlab\toolbox\shared\spc\src_ml\extern\include"  -I"E:\Mathlab\toolbox\shared\spc\src_ml\extern\src"  -I"E:\Mathlab\sys\lcc64\lcc64\include64"  -I"E:\Mathlab\toolbox\shared\spc\src_ml\extern\include"  -I"E:\Mathlab\toolbox\shared\spc\src_ml\extern\src" 
+ 
+
+ddmr_for_mstc2003_sfun.mexw64 : $(MAKEFILE) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o ddmr_for_mstc2003_sfun.mexw64 @ddmr_for_mstc2003_sfun.lmko
+ddmr_for_mstc2003_sfun.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\ddmr_for_mstc2003_sfun.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\ddmr_for_mstc2003_sfun.c"
+c2_ddmr_for_mstc2003.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\c2_ddmr_for_mstc2003.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\c2_ddmr_for_mstc2003.c"
+ddmr_for_mstc2003_sfun_registry.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\ddmr_for_mstc2003_sfun_registry.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\ddmr_for_mstc2003_sfun_registry.c"
+DAHostLib_Network.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\DAHostLib_Network.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\DAHostLib_Network.c"
+DAHostLib_rtw.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\DAHostLib_rtw.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\DAHostLib_rtw.c"
+half_type.obj :	"E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\half_type.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Personal\collage\Semester-5\Praktikum Robotika\DDMR_Webot\slprj\_sfprj\ddmr_for_mstc2003\_self\sfun\src\half_type.c"
+lccstub.obj :	"E:\Mathlab\sys\lcc64\lcc64\mex\lccstub.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Mathlab\sys\lcc64\lcc64\mex\lccstub.c"
+c_mexapi_version.obj :	"E:\Mathlab\extern\version\c_mexapi_version.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Mathlab\extern\version\c_mexapi_version.c"

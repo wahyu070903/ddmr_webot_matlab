@@ -1,0 +1,4 @@
+LIBRARY ddmr_for_mstc2003_sfun.mexw64
+EXPORTS
+mexFunction
+mexfilerequiredapiversion
